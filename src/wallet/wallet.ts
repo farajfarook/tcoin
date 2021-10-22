@@ -36,4 +36,8 @@ export class Wallet {
         }
         return transaction
     }
+
+    blockchainWallet(): Wallet {
+        return new Wallet()
+    }
 }
