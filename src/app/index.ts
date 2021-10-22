@@ -8,9 +8,16 @@ const bc = new Blockchain()
 
 app.use(express.json())
 
-app.get("/", (req, res) => {
+app.get("/", (_, res) => {
     res.json({
-        "blocks": "/blocks"
+        "blocks": {
+            "method": 'get',
+            "url": "/blocks"
+        },
+        "mine": {
+            "method": 'post',
+            "url": "/mine"
+        }
     })
 })
 
