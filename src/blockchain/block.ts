@@ -1,4 +1,4 @@
-import { SHA256 } from 'crypto-js'
+import { ChainUtil } from '../chain-util'
 import { DIFFICULTY, MINE_RATE } from '../config'
 
 export class Block {
@@ -20,12 +20,12 @@ export class Block {
 
     toString() {
         return `Block - 
-    Timestamp  : ${this.timestamp}
-    Last Hash  : ${this.lastHash.substring(0, 10)}
-    Hash       : ${this.hash.substring(0, 10)}
-    Nonce      : ${this.nonce}
-    Difficulty : ${this.difficulty}
-    Data       : ${JSON.stringify(this.data)}`
+    Timestamp   : ${this.timestamp}
+    Last Hash   : ${this.lastHash.substring(0, 10)}
+    Hash        : ${this.hash.substring(0, 10)}
+    Nonce       : ${this.nonce}
+    Difficulty  : ${this.difficulty}
+    Data        : ${JSON.stringify(this.data)}`
     }
 
     static genesis(): Block {
@@ -67,7 +67,7 @@ export class Block {
     }
 
     static hash(timestamp: number, lastHash: string, data: any, nonce: number, difficulty: number): string {
-        return SHA256(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString()
+        return ChainUtil.hash(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString()
     }
 
     static blockHash(block: Block) {
