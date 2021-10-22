@@ -58,5 +58,9 @@ app.post("/transactions", (req, res) => {
     res.json(tp.transactions)
 })
 
+app.get('/public-key', (_, res) => {
+    res.json(wallet.publicKey)
+})
+
 app.listen(HTTP_PORT, () => console.log(`Listening on port ${HTTP_PORT}`))
 p2pServer.listen()
