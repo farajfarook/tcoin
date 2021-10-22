@@ -31,5 +31,23 @@ export class P2PServer {
     connectSocket(socket: WebSocket) {
         this.sockets.push(socket)
         console.log('Socket connected')
+
+        this.messageHandler(socket)
+        this.sendChain(socket)
+    }
+
+    messageHandler(socket: WebSocket) {
+        socket.on('message', message => {
+            const chain = JSON.parse(message.toString())
+            this.blockchain.replaceChain(chain)
+        })
+    }
+
+    sendChain(socket: WebSocket) {
+        socket.send(JSON.stringify(this.blockchain.chain))
+    }
+
+    syncChains() {
+        this.sockets.forEach(socket => this.sendChain(socket))
     }
 }
