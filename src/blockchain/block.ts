@@ -66,7 +66,7 @@ export class Block {
             : difficulty - 1
     }
 
-    static hash(timestamp: number, lastHash: string, data: any, nonce: number, difficulty: number): string {
+    static hash(timestamp: number, lastHash: string, data: string, nonce: number, difficulty: number): string {
         return ChainUtil.hash(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString()
     }
 
