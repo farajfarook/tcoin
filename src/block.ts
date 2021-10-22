@@ -38,4 +38,9 @@ export class Block {
     static hash(timestamp: number, lastHash: string, data: string): string {
         return SHA256(`${timestamp}${lastHash}${data}`).toString()
     }
+
+    static blockHash(block: Block) {
+        const { timestamp, lastHash, data } = block
+        return this.hash(timestamp, lastHash, data)
+    }
 }
