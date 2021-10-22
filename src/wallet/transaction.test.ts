@@ -73,7 +73,7 @@ describe("Transaction", () => {
 
     describe('create a reward transaction', () => {
         beforeEach(() => {
-            transaction = Transaction.rewardTransaction(wallet, wallet.blockchainWallet())
+            transaction = Transaction.rewardTransaction(wallet, Wallet.blockchainWallet())
         })
 
         it('reward the miners wallet', () => {

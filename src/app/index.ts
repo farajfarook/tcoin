@@ -1,6 +1,7 @@
 import express from 'express'
 import { Blockchain } from '../blockchain'
 import { TransactionPool, Wallet } from '../wallet'
+import { Miner } from './miner'
 import { P2PServer } from './p2p-server'
 
 const HTTP_PORT = process.env.HTTP_PORT || 3001
@@ -10,6 +11,7 @@ const bc = new Blockchain()
 const wallet = new Wallet()
 const tp = new TransactionPool()
 const p2pServer = new P2PServer(bc, tp)
+const miner = new Miner(bc, tp, wallet, p2pServer)
 
 app.use(express.json())
 
@@ -38,12 +40,9 @@ app.get("/blocks", (_, res) => {
     res.json(bc.chain)
 })
 
-app.post("/blocks", (req, res) => {
-    const block = bc.addBlock(req.body.data)
+app.post("/blocks", (_, res) => {
+    const block = miner.mine()
     console.log(`New block added: ${block.toString()}`)
-
-    p2pServer.syncChains()
-
     res.json(bc.chain)
 })
 
