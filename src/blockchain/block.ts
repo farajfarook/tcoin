@@ -4,9 +4,9 @@ export class Block {
     timestamp: number
     lastHash: string
     hash: string
-    data: string
+    data: any
 
-    constructor(timestamp: number, lashHash: string, hash: string, data: string) {
+    constructor(timestamp: number, lashHash: string, hash: string, data: any) {
         this.timestamp = timestamp
         this.lastHash = lashHash
         this.hash = hash
@@ -18,7 +18,7 @@ export class Block {
     Timestamp: ${this.timestamp}
     Last Hash: ${this.lastHash.substring(0, 10)}
     Hash     : ${this.hash.substring(0, 10)}
-    Data     : ${this.data}`
+    Data     : ${JSON.stringify(this.data)}`
     }
 
     static genesis(): Block {
@@ -35,7 +35,7 @@ export class Block {
         return new Block(timestamp, lastHash, hash, data)
     }
 
-    static hash(timestamp: number, lastHash: string, data: string): string {
+    static hash(timestamp: number, lastHash: string, data: any): string {
         return SHA256(`${timestamp}${lastHash}${data}`).toString()
     }
 
