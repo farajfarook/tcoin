@@ -1,4 +1,4 @@
-import { Transaction } from ".";
+import { Transaction } from "./transaction";
 
 export class TransactionPool {
     transactions: Transaction[] = []
@@ -15,5 +15,21 @@ export class TransactionPool {
 
     existingTransaction(publicKey: string): Transaction {
         return this.transactions.find(t => t.data.input.address == publicKey)
+    }
+
+    validTransactions(): Transaction[] {
+        return this.transactions.filter(transaction => {
+            const { input, outputs } = transaction.data
+            const outputTotal = outputs.reduce((total, output) => total + output.amount, 0)
+            if (input.amount != outputTotal) {
+                console.log(`Invalid transaction from ${input.address}`)
+                return
+            }
+            if (!Transaction.verifyTransaction(transaction)) {
+                console.log(`Invalid signature from ${input.address}`)
+                return
+            }
+            return true
+        })
     }
 }

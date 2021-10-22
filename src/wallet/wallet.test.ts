@@ -28,12 +28,12 @@ describe("Wallet", () => {
             })
 
             it('doubles the `sendAmount` subtracted from the wallet balance', () => {
-                expect(transaction.data.output.find(o => o.address == wallet.publicKey).amount)
+                expect(transaction.data.outputs.find(o => o.address == wallet.publicKey).amount)
                     .toEqual(wallet.balance - sendAmount * 2)
             })
 
             it('clones the `sendAmount` output for the recipient', () => {
-                expect(transaction.data.output.filter(o => o.address == recipient).map(o => o.amount))
+                expect(transaction.data.outputs.filter(o => o.address == recipient).map(o => o.amount))
                     .toEqual([sendAmount, sendAmount])
             })
         })
@@ -46,12 +46,12 @@ describe("Wallet", () => {
             })
 
             it('sum of `sendAmount` and `nextSendAmount` subtracted from the wallet balance', () => {
-                expect(transaction.data.output.find(o => o.address == wallet.publicKey).amount)
+                expect(transaction.data.outputs.find(o => o.address == wallet.publicKey).amount)
                     .toEqual(wallet.balance - sendAmount - nextSendAmount)
             })
 
             it('values `sendAmount` and `nextSendAmount` output for the recipient', () => {
-                expect(transaction.data.output.filter(o => o.address == recipient).map(o => o.amount).sort())
+                expect(transaction.data.outputs.filter(o => o.address == recipient).map(o => o.amount).sort())
                     .toEqual([sendAmount, nextSendAmount].sort())
             })
         })

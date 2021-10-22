@@ -1,4 +1,5 @@
-import { Wallet } from "."
+import { MINING_REWARD } from './../config';
+import { Wallet } from "./wallet"
 import { ChainUtil } from "../chain-util"
 
 export class Transaction {
@@ -6,46 +7,56 @@ export class Transaction {
         id: string
         timestamp: number
         input: TransactionRecord
-        output: TransactionRecord[]
+        outputs: TransactionRecord[]
     }
     signature: any
 
-    private constructor(senderWallet: Wallet) {
-        this.data = {
+    addRecipient(senderWallet: Wallet, recipient: string, amount: number): boolean {
+        if (this.data.input.address != senderWallet.publicKey) {
+            console.log(`Input address is different from the wallet address`)
+            return
+        }
+        const senderOutput = this.data.outputs.find(o => o.address == senderWallet.publicKey)
+        if (amount > senderOutput.amount) {
+            console.log(`Amount: ${amount} exceeds balance.`)
+            return
+        }
+        senderOutput.amount = senderOutput.amount - amount
+        this.data.outputs.push({ address: recipient, amount })
+        Transaction.signTransaction(this, senderWallet)
+    }
+
+    static transactionWithOutput(senderWallet: Wallet, outputs: TransactionRecord[]) {
+        const transaction = new Transaction()
+        transaction.data = {
             id: ChainUtil.id(),
             timestamp: Date.now(),
             input: {
                 amount: senderWallet.balance,
                 address: senderWallet.publicKey
             },
-            output: [{
-                amount: senderWallet.balance,
-                address: senderWallet.publicKey
-            }]
+            outputs: outputs
         }
+        Transaction.signTransaction(transaction, senderWallet)
+        return transaction
     }
 
-    addRecipient(senderWallet: Wallet, recipient: string, amount: number): boolean {
-        if (this.data.input.address != senderWallet.publicKey) {
-            console.log(`Input address is different from the wallet address`)
-            return false
-        }
-        const senderOutput = this.data.output.find(o => o.address == senderWallet.publicKey)
-        if (amount > senderOutput.amount) {
+    static newTransaction(senderWallet: Wallet, recipient: string, amount: number): Transaction {
+        if (amount > senderWallet.balance) {
             console.log(`Amount: ${amount} exceeds balance.`)
-            return false
+            return
         }
-        senderOutput.amount = senderOutput.amount - amount
-        this.data.output.push({ amount, address: recipient })
-        Transaction.signTransaction(this, senderWallet)
-        return true
+        return this.transactionWithOutput(senderWallet, [
+            { address: senderWallet.publicKey, amount: senderWallet.balance - amount },
+            { address: recipient, amount: amount }
+        ])
     }
 
-    static newTransaction(senderWallet: Wallet, recipient: string, amount: number) {
-        const transaction = new Transaction(senderWallet)
-        return transaction.addRecipient(senderWallet, recipient, amount)
-            ? transaction
-            : null
+    static rewardTransaction(minerWallet: Wallet, blockchainWallet: Wallet): Transaction {
+        return this.transactionWithOutput(blockchainWallet, [{
+            address: minerWallet.publicKey,
+            amount: MINING_REWARD
+        }])
     }
 
     static signTransaction(transaction: Transaction, senderWallet: Wallet) {

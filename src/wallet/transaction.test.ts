@@ -15,13 +15,13 @@ describe("Transaction", () => {
     })
 
     it('outputs the `amount` subtracted from the wallet balance', () => {
-        const outputRecord = transaction.data.output.find(o => o.address == wallet.publicKey)
+        const outputRecord = transaction.data.outputs.find(o => o.address == wallet.publicKey)
         expect(outputRecord.amount)
             .toEqual(wallet.balance - amount)
     })
 
     it('output the `amount` added to the recipient', () => {
-        const outputRecord = transaction.data.output.find(o => o.address == recipient)
+        const outputRecord = transaction.data.outputs.find(o => o.address == recipient)
         expect(outputRecord.amount).toEqual(amount)
     })
 
@@ -34,7 +34,7 @@ describe("Transaction", () => {
     })
 
     it('invalidates a corrupt transaction', () => {
-        transaction.data.output[0].amount = 50000
+        transaction.data.outputs[0].amount = 50000
         expect(Transaction.verifyTransaction(transaction)).toBe(false)
     })
 
@@ -45,7 +45,7 @@ describe("Transaction", () => {
         })
 
         it('does not create the transaction', () => {
-            expect(transaction).toEqual(null)
+            expect(transaction).toEqual(undefined)
         })
     })
 
@@ -60,12 +60,12 @@ describe("Transaction", () => {
         })
 
         it('subtracts the next amount from the senders output', () => {
-            expect(transaction.data.output.find(o => o.address == wallet.publicKey).amount)
+            expect(transaction.data.outputs.find(o => o.address == wallet.publicKey).amount)
                 .toEqual(wallet.balance - amount - nextAmount)
         })
 
         it('outputs an amount for the next recipient', () => {
-            expect(transaction.data.output.find(o => o.address == nextRecipient).amount)
+            expect(transaction.data.outputs.find(o => o.address == nextRecipient).amount)
                 .toEqual(nextAmount)
         })
     })
