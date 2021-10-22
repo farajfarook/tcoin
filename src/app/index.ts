@@ -6,13 +6,21 @@ const HTTP_PORT = process.env.HTTP_PORT || 3001
 const app = express()
 const bc = new Blockchain()
 
+app.use(express.json())
+
 app.get("/", (req, res) => {
     res.json({
         "blocks": "/blocks"
     })
 })
 
-app.get("/blocks", (req, res) => {
+app.get("/blocks", (_, res) => {
+    res.json(bc.chain)
+})
+
+app.post("/mine", (req, res) => {
+    const block = bc.addBlock(req.body.data)
+    console.log(`New block added: ${block.toString()}`)
     res.json(bc.chain)
 })
 
