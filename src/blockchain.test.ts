@@ -36,4 +36,24 @@ describe("Blockchain", () => {
         bc2.chain[1].data = "not foo"
         expect(bc.isValidChain(bc2.chain)).toBe(false)
     })
+
+    it('replaces the chain wih valid chain', () => {
+        bc2.addBlock("doo")
+        bc.replaceChain(bc2.chain)
+        expect(bc.chain).toEqual(bc2.chain)
+    })
+
+    it("doesn't replaces the chain with one if less than length", () => {
+        bc.addBlock("foo")
+        bc.replaceChain(bc2.chain)
+        expect(bc.chain).not.toEqual(bc2.chain)
+    })
+
+    it("doesn't replaces the chain with one if equal length", () => {
+        bc.addBlock("foo")
+        bc2.addBlock("boo")
+        bc.replaceChain(bc2.chain)
+        expect(bc.chain).not.toEqual(bc2.chain)
+    })
+
 })
