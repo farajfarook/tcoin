@@ -22,7 +22,7 @@ export class Block {
     }
 
     static genesis(): Block {
-        const timestamp = Date.parse('21/10/2021')
+        const timestamp = Date.parse('2021-10-22T00:00:00.000Z')
         let lastHash = null
         let data = null
         return new Block(timestamp, lastHash, this.hash(timestamp, lastHash, data), data)
