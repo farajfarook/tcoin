@@ -24,7 +24,7 @@ export class Block {
     Last Hash  : ${this.lastHash.substring(0, 10)}
     Hash       : ${this.hash.substring(0, 10)}
     Nonce      : ${this.nonce}
-    Difficulty : ${DIFFICULTY}
+    Difficulty : ${this.difficulty}
     Data       : ${JSON.stringify(this.data)}`
     }
 
@@ -38,19 +38,23 @@ export class Block {
         return new Block(timestamp, lastHash, hash, data, nonce, difficulty)
     }
 
-    static mineBlock(lastBlock: Block, data: any) {
+    static mineBlock(lastBlock: Block, data: any): Block {
         const lastHash = lastBlock.hash
 
         let difficulty: number
         let timestamp: number
         let hash: string
         let nonce = 0
+
+        const startTime = Date.now()
         do {
             nonce++
             timestamp = Date.now()
             difficulty = Block.adjustDifficulty(lastBlock, timestamp)
             hash = this.hash(timestamp, lastHash, data, nonce, difficulty)
         } while (hash.substring(0, difficulty) !== '0'.repeat(difficulty))
+
+        console.log(`Mining took ${timestamp - startTime} seconds`)
 
         return new Block(timestamp, lastHash, hash, data, nonce, difficulty)
     }
