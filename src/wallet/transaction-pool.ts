@@ -12,4 +12,8 @@ export class TransactionPool {
             this.transactions.push(transaction)
         }
     }
+
+    existingTransaction(publicKey: string): Transaction {
+        return this.transactions.find(t => t.data.input.address == publicKey)
+    }
 }
